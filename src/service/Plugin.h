@@ -95,8 +95,7 @@ public:
      * otherwise using the value  */
     const uint16_t pluginFrequency; 
 
-    /* the true if the plugin
-                           needs to remove the original packet */
+    /* returns true if the plugi needs to remove the original packet */
     bool removeOrigPkt; 
 
     vector<Packet *> pktVector; /* std vector of Packet* used for created packets */
@@ -107,7 +106,7 @@ public:
     void reset(void);
 
     /* Plugin is an abstract class, these are the methods implement by the plugin extenstions */
-    virtual bool init(const scrambleMask &, char *, struct sjEnviron *) = 0;
+    virtual bool init(scrambleMask&, char *, struct sjEnviron *) = 0;
     virtual bool condition(const Packet &, scrambleMask &) = 0;
     virtual void apply(const Packet &, scrambleMask &) = 0;
     virtual void mangleIncoming(Packet &) = 0;

@@ -8,7 +8,7 @@ SET(VERSION_MINOR 5)
 SET(SUFFIX "devel")
 
 SET(CMAKE_SHARED_LIBRARY_PREFIX "")
-SET(CMAKE_CXX_FLAGS "-g3 -O3 -ansi -pedantic -Wall -Wno-variadic-macros ${CMAKE_CXX_FLAGS}")
+SET(CMAKE_CXX_FLAGS "-g3 -O3 -Wall -ansi -pedantic -Wno-variadic-macros ${CMAKE_CXX_FLAGS}")
 #SET(CMAKE_CXX_FLAGS "-O3 -ansi -pedantic -Wall -Wno-variadic-macros ${CMAKE_CXX_FLAGS}")
 
 SET(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/modules/")

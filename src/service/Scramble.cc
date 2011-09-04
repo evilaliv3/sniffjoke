@@ -12,7 +12,7 @@
 char scrambleMask::scrambleList[ SCRAMBLE_SUPPORTED * 14 ];
 
 /*
- * scrambleMask is used as variable inside Packet, Plugin and Scramble classess
+ * scrambleMask is used as variable inside Packet, Plugin and Scramble classes
  * to keep track of the series of scramble used, configured, supported, implemented, etc...
  */
 scrambleMask & scrambleMask::operator+=(const scramble_t toAdd)
@@ -83,7 +83,6 @@ bool scrambleMask::willCorrupt(void) const
 
 const char *scrambleMask::debug(void) const
 {
-    uint32_t i;
     char *p = &scrambleList[0];
 
     if(!innerMask)
@@ -91,7 +90,7 @@ const char *scrambleMask::debug(void) const
 
     memset(scrambleList, 0x00, sizeof(scrambleList));
 
-    for( i = 0; i < SCRAMBLE_SUPPORTED; i++ )
+    for(uint32_t i = 0; i < SCRAMBLE_SUPPORTED; i++ )
     {
         if( ((uint8_t)sjImplementedScramble[i].scrambleBit) & innerMask )
         {
@@ -105,7 +104,7 @@ const char *scrambleMask::debug(void) const
         }
     }
 
-    return const_cast<const char *>(&scrambleList[0]);
+    return &scrambleList[0];
 }
 
 /* three kind of construction type: empty, single, mask */
@@ -128,22 +127,14 @@ void Scramble::setupIncoming_filter(void)
 void Scramble::setupScramble(void)
 {
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
-    {
-        ScrambleImpl *scI = *it;
-
-        (*scI).scramInitSetup();
-    }
+        (*it)->scramInitSetup();
 }
 
 /* when a new session is registered, need to be signaled to the scramble,  */
 void Scramble::registerSession(Packet &pkt, SessionTrack &sex)
 {
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
-    {
-        ScrambleImpl *scI = *it;
-
-        (*scI).scramRegisterSession(pkt, sex);
-    }
+        (*it)->scramRegisterSession(pkt, sex);
 }
 
 /* on the active session apply the scrambles anche check if a specific request exists */ 
@@ -152,11 +143,7 @@ bool Scramble::applyScramble(whenmark_t when, Packet &pkt)
     bool removeOrig = false;
 
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
-    {
-        ScrambleImpl *scI = *it;
-
-        removeOrig = (*scI).apply(pkt);
-    }
+        removeOrig |= (*it)->apply(pkt);
 
     return removeOrig;
 }
@@ -164,34 +151,17 @@ bool Scramble::applyScramble(whenmark_t when, Packet &pkt)
 bool Scramble::applySingleScramble(scramble_t request, Packet &pkt)
 {
     bool removeOrig = false;
-    ScrambleImpl *scI = NULL;
 
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
     {
         if( (*it)->scrambleID == request )
         {
-            /* see below, acts as marker */
-            scI = (*it);
-
             removeOrig = scI->apply(pkt);
+            return removeOrig;
         }
     }
 
-#if 0 
-
-/home/vecna/Desktop/sniffjoke-project/sniffjoke/src/service/Scramble.cc: In member function ‘bool Scramble::applySingleScramble(scramble_t, Packet&)’:
-/home/vecna/Desktop/sniffjoke-project/sniffjoke/src/service/Scramble.cc:50: error: request for member ‘apply’ in ‘((Scramble*)this)->Scramble::scramble_pool.std::vector<_Tp, _Alloc>::operator[] [with _Tp = ScrambleImpl*, _Alloc = std::allocator<ScrambleImpl*>](((unsigned int)scrambleIndex))’, which is of non-class type ‘ScrambleImpl*’
-
-    uint8_t scrambleIndex = (uint8_t)request;
-    /* calling scramble_pool[x] popoulate scramble_pool[x].scramblePkt packet vector */
-    removeOrig = scramble_pool[scrambleIndex].apply(pkt);
-
-#endif
-
-    if(scI == NULL)
-        RUNTIME_EXCEPTION("requested invalid/not found scramble with id %d", (uint32_t)request);
-
-    return removeOrig;
+    RUNTIME_EXCEPTION("requested invalid/not found scramble with id %d", (uint32_t)request);
 }
 
 bool Scramble::mystifyScramble(whenmark_t when, Packet &pkt)
@@ -213,11 +183,7 @@ bool Scramble::isKeepRequired(Packet &pkt)
      * bruteforce implementation a pure UDP flaw could go in starvation.
      */
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
-    {
-        ScrambleImpl *scI = *it;
-
-        retval |= (*scI).pktKeepRefresh(pkt);
-    }
+        retval |= (*it)->pktKeepRefresh(pkt);
 
     return retval;
 }
@@ -225,11 +191,7 @@ bool Scramble::isKeepRequired(Packet &pkt)
 void Scramble::periodicEvent(void)
 {
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it)
-    {
-        ScrambleImpl *scI = *it;
-
-        (*scI).periodicEvent();
-    }
+        (*it)->periodicEvent();
 }
 
 /* constructor: created as singleton */
@@ -246,10 +208,7 @@ Scramble::~Scramble(void)
     LOG_VERBOSE("~Scramble");
 
     for (vector<ScrambleImpl *>::iterator it = scramble_pool.begin(); it != scramble_pool.end(); ++it) 
-    {
-        ScrambleImpl *scI = (*it);
-        delete scI;
-    }
+        delete *it;
 }
 
 ScrambleImpl::ScrambleImpl(scramble_t sID, const char *sN, vector<Packet *> *rV, bool rOp, whenmark_t when) :

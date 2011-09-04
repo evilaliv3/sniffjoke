@@ -46,7 +46,7 @@ public:
     uint16_t sport;
     uint16_t dport;
 
-    struct pkt_n_track ingoing;
+    struct pkt_n_track incoming;
     struct pkt_n_track outgoing;
 
     SessionTrack(const Packet &);

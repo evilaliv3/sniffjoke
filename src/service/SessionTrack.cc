@@ -33,7 +33,7 @@ SessionTrack::SessionTrack(const Packet &pkt) :
 access_timestamp(0),
 daddr(pkt.ip->daddr)
 {
-    memset(&ingoing, 0x00, sizeof(struct pkt_n_track));
+    memset(&incoming, 0x00, sizeof(struct pkt_n_track));
     memset(&outgoing, 0x00, sizeof(struct pkt_n_track));
 
     if (pkt.proto == TCP)
@@ -72,7 +72,7 @@ SessionTrack::~SessionTrack(void)
     strftime(sj_clock_str, sizeof (sj_clock_str), "%F %T", localtime(&access_timestamp));
     fprintf(sessionLog, "%s\t%d:%d\t#%d, I (N: %d inj %d D: %d) O (N: %d inj %d D: %d)\n",
             sj_clock_str, ntohs(sport), ntohs(dport), 
-            ingoing.natural, ingoing.injected, ingoing.dropped,
+            incoming.natural, incoming.injected, incoming.dropped,
             outgoing.natural, outgoing.injected, outgoing.dropped
             );
 
@@ -95,7 +95,7 @@ void SessionTrack::selflog(const char *func, const char *format, ...) const
                 func, loginfo, proto == IPPROTO_TCP ? "TCP" : "UDP",
                 ntohs(sport),
                 inet_ntoa(*((struct in_addr *) &daddr)), ntohs(dport),
-                ingoing.natural, ingoing.injected, ingoing.dropped,
+                incoming.natural, incoming.injected, incoming.dropped,
                 outgoing.natural, outgoing.injected, outgoing.dropped
                 );
 }

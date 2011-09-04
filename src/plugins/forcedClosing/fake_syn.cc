@@ -62,7 +62,7 @@ public:
     {
     };
 
-    virtual bool init(const scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
+    virtual bool init(scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
     {
         boundary = ((random() % 5000) * 2);
 

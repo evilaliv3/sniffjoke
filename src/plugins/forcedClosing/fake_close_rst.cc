@@ -66,7 +66,7 @@ public:
     {
     };
 
-    virtual bool init(const scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
+    virtual bool init(scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
     {
         if(configuredScramble.willCorrupt())
         {

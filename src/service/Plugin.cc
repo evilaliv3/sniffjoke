@@ -119,6 +119,13 @@ void PluginCache::manage(void)
     manage_timeout = sj_clock + timeout_len;
 }
 
+Plugin::Plugin(const char* pluginName, uint16_t pluginFrequency) :
+pluginName(pluginName),
+pluginFrequency(pluginFrequency),
+removeOrigPkt(false)
+{
+}
+
 void Plugin::reset(void)
 {
     removeOrigPkt = false;

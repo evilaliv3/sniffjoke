@@ -69,7 +69,7 @@ public:
     {
     };
 
-    virtual bool init(const scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
+    virtual bool init(scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
     {
         LOG_VERBOSE("%s plugin ignore the configured scramble (%s): generate only INNOCENT packets", 
                     PLUGIN_NAME, configuredScramble.debug() );

@@ -100,7 +100,7 @@ void PluginPool::initializeAll(struct sjEnviron *autoptrList)
     uint32_t counter = 1;
     for (vector<PluginTrack *>::iterator it = pool.begin(); it != pool.end(); ++it)
     {
-        const PluginTrack *plugin = *it;
+        PluginTrack* const plugin = *it;
         bool initval;
 
         initval = plugin->selfObj->init(plugin->configuredScramble, plugin->declaredOpt, autoptrList);
@@ -109,13 +109,13 @@ void PluginPool::initializeAll(struct sjEnviron *autoptrList)
         {
             RUNTIME_EXCEPTION("Unable to init %s whitin the current configuration context: scramble %s opt [%s]", 
                               plugin->selfObj->pluginName, 
-                              (const_cast<scrambleMask &>(plugin->configuredScramble)).debug(), 
+                              plugin->configuredScramble.debug(), 
                               plugin->declaredOpt != NULL ? plugin->declaredOpt : "/" );
         }
 
         LOG_DEBUG("%d) Initialized %s successfull with complete configuration context: scramble %s opt [%s]", 
                   counter, plugin->selfObj->pluginName, 
-                  (const_cast<scrambleMask &>(plugin->configuredScramble)).debug(), 
+                  plugin->configuredScramble.debug(), 
                   plugin->declaredOpt != NULL ? plugin->declaredOpt : "/" );
 
         counter++;
@@ -194,14 +194,14 @@ bool PluginPool::parseScrambleOpt(char *list_str, scrambleMask *retval, char **o
         if (*optParse == 0x00)
         {
             LOG_ALL("no valid option passed after the control char '+': %s", list_str);
-            goto invalid_parsing;
+            return false;
         }
 
         /* no other symbol are accepted */
         if (!isalnum(*optParse))
         {
             LOG_ALL("invalid char after '+' only alphanumeric and digit accepted: %s", list_str);
-            goto invalid_parsing;
+            return false;
         }
 
         /* const assigment */
@@ -213,6 +213,7 @@ bool PluginPool::parseScrambleOpt(char *list_str, scrambleMask *retval, char **o
      *   plugin.so,SCRAMBLE1[,SCRAMBLE2][,SCRAMBLE3]         */
     for (uint32_t i = 0; i < SCRAMBLE_SUPPORTED; i++)
     {
+        printf("%s %s\n", copyStr, sjImplementedScramble[i].keyword);
         if (strstr(copyStr, sjImplementedScramble[i].keyword))
         {
             foundScramble = true;
@@ -220,7 +221,6 @@ bool PluginPool::parseScrambleOpt(char *list_str, scrambleMask *retval, char **o
         }
     }
 
-invalid_parsing:
     return foundScramble;
 }
 

@@ -718,8 +718,8 @@ uint32_t SniffJoke::appendSJSessionInfo(uint8_t *p, const SessionTrack &SexToDum
     sr.sport = SexToDump.sport;
 
     /* this need to be updated, simply all client/server communication need to be substituted */
-    sr.packet_number = (SexToDump.ingoing.natural + SexToDump.outgoing.natural);
-    sr.injected_pktnumber = (SexToDump.ingoing.injected + SexToDump.outgoing.injected);
+    sr.packet_number = (SexToDump.incoming.natural + SexToDump.outgoing.natural);
+    sr.injected_pktnumber = (SexToDump.incoming.injected + SexToDump.outgoing.injected);
 
     memcpy((void *) p, (void *) &sr, sizeof (sr));
 

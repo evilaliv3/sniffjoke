@@ -65,9 +65,9 @@ public:
     {
     }
 
-    virtual bool init(const scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
+    virtual bool init(scrambleMask &configuredScramble, char *pluginOption, struct sjEnviron *sjE)
     {
-        if(const_cast<scrambleMask &>(configuredScramble).willCorrupt())
+        if(configuredScramble.willCorrupt())
         {
             supportedScrambles = configuredScramble;
             return true;
@@ -144,7 +144,7 @@ public:
         pktVector.push_back(pkt);
     }
 
-    virtual void apply(const Packet &origpkt, scrambleMask & availableScrambles)
+    virtual void apply(const Packet &origpkt, scrambleMask &availableScrambles)
     {
         /* the sniffer trust the FIN because has the last sequence number + 1 */
         if (random_percent(80))
@@ -175,7 +175,7 @@ public:
 
     virtual void mangleIncoming(Packet &x)
     {
-        /* not required ATM */
+        // not required ATM
     }
 };
 

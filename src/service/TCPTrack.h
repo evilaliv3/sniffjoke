@@ -59,7 +59,7 @@ private:
     void handleKeepPackets(void);
     void handleHackPackets(void);
 
-    uint32_t acquirePktVector(Packet &, vector<Packet *>, const char *, queue_t);
+    uint32_t acquirePktVector(Packet &, vector<Packet *> &, const char *, queue_t);
 
 public:
 

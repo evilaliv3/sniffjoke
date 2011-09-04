@@ -4,29 +4,31 @@
 /* this is the base enum used for keep track of which scramble has been used/requested */
 enum scramble_t
 {   /* -- Scramble.h has to be updated whenever a new value here is addedd -- */
-    NOSCRAMBLESET = 0, TTL = 1, IPTCPOPT = 2, CKSUM = 4, FINRST = 8, FRAGMENT = 16, TCPOVERLAP = 32
+    NOSCRAMBLESET = 0, INNOC = 1, TTL = 2, IPTCPOPT = 4, CKSUM = 8, FINRST = 16, FRAGMENT = 32, TCPOVERLAP = 64
 };
 
-#define NO_ONE_SCRAMBLE "No scramble set"
+#define NO_ONE_SCRAMBLE "NO_SCRAMBLE_SET"
+#define INN_SCRAMBLE_N "INNOCENT"
 #define TTL_SCRAMBLE_N  "TTL"
 #define OPT_SCRAMBLE_N  "IPTCPOPT"
-#define CKS_SCRAMBLE_N  "Checksum"
-#define FNR_SCRAMBLE_N  "FinRst"
-#define FRAG_SCRAMBLE_N "IPfragment"
-#define TCPO_SCRAMBLE_N "TCPoverlap"
+#define CKS_SCRAMBLE_N  "CHECKSUM"
+#define FNR_SCRAMBLE_N  "FINRST"
+#define FRAG_SCRAMBLE_N "IPFRAGMENT"
+#define TCPO_SCRAMBLE_N "TCPOVERLAP"
 
 /* the scramble_t is defined in Packet.h */
 struct implementedScramble {
     const char *keyword;
     scramble_t scrambleBit;
-    // TODO if the scramble will corruppt, mistyfy, be good or whatever, must be written here 
+    // TODO if the scramble will corrupt, mistyfy, be good or whatever, must be written here; 
     // this data will be used by "willCorrupt" method
 };
 
-#define SCRAMBLE_SUPPORTED  6
+#define SCRAMBLE_SUPPORTED  7
 
 /* a global variable called by PluginPool.cc and [fixme] */
 const struct implementedScramble sjImplementedScramble[SCRAMBLE_SUPPORTED] =  {
+    { INN_SCRAMBLE_N, INNOC }, 
     { TTL_SCRAMBLE_N, TTL },
     { OPT_SCRAMBLE_N, IPTCPOPT },
     { CKS_SCRAMBLE_N, CKSUM },
